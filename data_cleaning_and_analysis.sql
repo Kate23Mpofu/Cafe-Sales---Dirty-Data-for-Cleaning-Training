@@ -67,3 +67,26 @@ FROM duplicates
 WHERE dp = 1;
 
 -- use cafe_sales_clean
+-- check for multiple missing values
+SELECT 
+    *
+FROM
+    cafe_sales_clean
+WHERE
+    (item IS NULL OR item = '')
+        AND (payment_method IS NULL
+        OR payment_method = '')
+        AND (location IS NULL OR location = '');
+
+-- drop columns that have a lot of missing information
+DELETE FROM cafe_sales_clean 
+WHERE
+    (item IS NULL OR item = '')
+    AND (payment_method IS NULL
+    OR payment_method = '')
+    AND (location IS NULL OR location = '');
+    
+SELECT 
+    *
+FROM
+    cafe_sales_clean;
