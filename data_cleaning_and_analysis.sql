@@ -98,6 +98,29 @@ WHERE
 
 -- handle missing total_spent amounts
 -- the total_spent is quantity * price_per_unit
+
+SELECT 
+    *
+FROM
+    cafe_sales_clean
+WHERE
+    quantity IS NULL OR quantity = ''
+        OR quantity = 'ERROR'
+        OR quantity = 'UNKNOWN'
+;
+
+-- find missing quantity
+SELECT 
+    *
+FROM
+    cafe_sales_clean
+WHERE
+    price_per_unit IS NULL
+        OR price_per_unit = ''
+        OR price_per_unit = 'ERROR'
+        OR price_per_unit = 'UNKNOWN'
+;
+
 UPDATE cafe_sales_clean 
 SET 
     total_spent = (quantity * price_per_unit)
@@ -165,13 +188,19 @@ WHERE
 -- handle missing dates
 UPDATE cafe_sales_clean 
 SET 
-    transaction_date = 'UNKNOWN'
+    transaction_date = NULL
 WHERE
     transaction_date IS NULL
         OR transaction_date = ''
         OR transaction_date = 'ERROR'
         OR transaction_date = 'UNKNOWN'
 ;
+
+-- type cast the transaction_date to a DATE
+SELECT 
+    CAST(transaction_date AS DATE) AS transaction_date
+FROM
+    cafe_sales_clean;
 
 -- check if quantity and prices per unit are positive
 SELECT 
@@ -180,4 +209,3 @@ FROM
     cafe_sales_clean
 WHERE
     quantity < 1;
-
