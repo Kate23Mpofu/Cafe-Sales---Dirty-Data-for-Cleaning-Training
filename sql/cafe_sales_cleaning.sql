@@ -1,8 +1,10 @@
+-- view original dataset
 SELECT 
     *
 FROM
     dirty_cafe_sales;
 
+-- check how many rows we have
 SELECT 
     COUNT(*) AS total
 FROM
