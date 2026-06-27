@@ -84,16 +84,42 @@ All analysis queries filter out `'UNKNOWN'` values where relevant to avoid skewi
 ## 📁 Project Structure
 
 ```
-cafe-sales-cleaning/
+Cafe-Sales---Dirty-Data-for-Cleaning-Training/
+
+├── Power BI/
+
+│   ├── Main Dashboard.png              # Screenshot of the main dashboard page
+
+│   ├── Breakdown.png                   # Screenshot of the breakdown page
+
+│   └── cafe_sales_visualization.pbit  # Power BI template file
+
 │
+
+├── Reports/
+
+│   ├── Cafe_Sales_Analysis_Technical_Report.pdf  # Full technical report (cleaning, SQL, model)
+
+│   └── Cafe_Sales_Client_Report.pdf             # Client-facing summary (findings & recommendations)
+
+│
+
 ├── data/
-│   └── dirty_cafe_sales.csv     # Original raw dataset (from Kaggle)
+
+│   └── dirty_cafe_sales.csv           # Original raw dataset (from Kaggle)
+
 │
+
 ├── sql/
-│   ├── cafe_sales_cleaning.sql  # Full cleaning script
-│   └── cafe_sales_analysis.sql  # Exploratory analysis queries
+
+│   ├── cafe_sales_cleaning.sql        # Data cleaning and standardisation script
+
+│   └── cafe_sales_analysis.sql        # Exploratory analysis queries
+
 │
+
 └── README.md
+
 ```
 
 ---
