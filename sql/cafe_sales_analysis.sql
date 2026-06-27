@@ -6,14 +6,23 @@ FROM
     cafe_sales_clean;
 
 -- Which item sells the most (by quantity and by revenue)?
+-- by quantity
 SELECT 
-    item,
-    SUM(quantity) AS total_quantity_sold,
-    SUM(quantity * price_per_unit) AS total_revenue
+    item, SUM(quantity) AS total_quantity_sold
 FROM
     cafe_sales_clean
 GROUP BY item
-ORDER BY total_quantity_sold DESC , total_revenue DESC;
+ORDER BY total_quantity_sold DESC
+LIMIT 1;
+
+-- by revenue
+SELECT 
+    item, SUM(quantity * price_per_unit) AS total_revenue
+FROM
+    cafe_sales_clean
+GROUP BY item
+ORDER BY total_revenue DESC
+LIMIT 1;
 
 -- What is the most common payment method?
 SELECT 
@@ -21,18 +30,20 @@ SELECT
 FROM
     cafe_sales_clean
 WHERE
-    payment_method != 'UNKNOWN'
+    payment_method IS NOT NULL
+        AND payment_method <> 'UNKNOWN'
 GROUP BY payment_method
-ORDER BY payment_method_count DESC;
+ORDER BY payment_method_count DESC
+LIMIT 1;
 
 
 -- How many transactions came from each location (In-store vs Takeaway)?
 SELECT 
-    location, COUNT(location) AS location_count
+    location, COUNT(*) AS location_count
 FROM
     cafe_sales_clean
 WHERE
-    location != 'UNKNOWN'
+    location <> 'UNKNOWN'
 GROUP BY location;
 
 -- Which item generates the most revenue per location?
@@ -44,13 +55,13 @@ SELECT
 FROM
     cafe_sales_clean
 WHERE
-    location != 'UNKNOWN'
-        AND item != 'UNKNOWN'
+    location <> 'UNKNOWN'
+        AND item <> 'UNKNOWN'
 GROUP BY location , item
 ),
 ranked AS (
-SELECT *,
-ROW_NUMBER() OVER (PARTITION BY location ORDER BY total_revenue DESC) AS rn
+SELECT location, item, total_revenue,
+RANK() OVER (PARTITION BY location ORDER BY total_revenue DESC) AS rn
 FROM revenue_by_item
 )
 
@@ -68,47 +79,49 @@ SELECT
 FROM
     cafe_sales_clean
 WHERE
-    payment_method != 'UNKNOWN'
+    payment_method <> 'UNKNOWN'
 GROUP BY payment_method;
 
 
 -- Which items are most popular per location?
 WITH total_sales_per_location AS (
-SELECT item, location, SUM(quantity * price_per_unit) AS total_sales
+SELECT item, location, SUM(quantity) AS total_quantity
 FROM cafe_sales_clean
-WHERE item != 'UNKNOWN' AND location != 'UNKNOWN'
+WHERE item <> 'UNKNOWN' AND location <> 'UNKNOWN'
 GROUP BY item, location
 ),
 ranked AS (
 SELECT *,
-ROW_NUMBER() OVER (PARTITION BY location ORDER BY total_sales DESC) AS rn
+RANK() OVER (PARTITION BY location ORDER BY total_quantity DESC) AS rn
 FROM total_sales_per_location
 )
-SELECT item, location, total_sales
+SELECT item, location, total_quantity
 FROM ranked
 WHERE rn = 1;
 
 -- What is the busiest day/month for sales?
 -- busiest month
 SELECT 
-    EXTRACT(MONTH FROM transaction_date) AS order_month,
-    SUM(quantity * price_per_unit) AS total_sales
+    YEAR(transaction_date) AS order_year,
+    MONTHNAME(transaction_date) AS order_month,
+    COUNT(*) AS total_transactions
 FROM
     cafe_sales_clean
 WHERE
     transaction_date IS NOT NULL
-        AND item != 'UNKNOWN'
-GROUP BY order_month
-ORDER BY total_sales DESC;
+        AND item <> 'UNKNOWN'
+GROUP BY YEAR(transaction_date) , MONTH(transaction_date) , MONTHNAME(transaction_date)
+ORDER BY total_transactions DESC;
 
 -- busiest day
 SELECT 
+    YEAR(transaction_date) AS order_year,
     DAYNAME(transaction_date) AS order_day,
-    SUM(quantity * price_per_unit) AS total_sales
+    COUNT(*) AS total_transactions
 FROM
     cafe_sales_clean
 WHERE
     transaction_date IS NOT NULL
-        AND item != 'UNKNOWN'
-GROUP BY order_day
-ORDER BY total_sales DESC;
+        AND item <> 'UNKNOWN'
+GROUP BY YEAR(transaction_date) , DAYNAME(transaction_date)
+ORDER BY total_transactions DESC;
