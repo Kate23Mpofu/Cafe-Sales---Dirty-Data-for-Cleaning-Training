@@ -1,3 +1,7 @@
+![Dashboard](https://github.com/Kate23Mpofu/Cafe-Sales---Dirty-Data-for-Cleaning-Training/blob/main/Power%20BI/Main%20Dashboard.png)
+
+---
+
 # ☕ Cafe Sales - Dirty Data Cleaning & Analysis Project
 
 > Cleaning messy transaction records and uncovering sales insights using MySQL.
