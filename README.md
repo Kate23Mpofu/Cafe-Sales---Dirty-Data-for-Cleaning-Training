@@ -125,7 +125,11 @@ Cafe-Sales---Dirty-Data-for-Cleaning-Training/
 └── README.md
 
 ```
+## Dashboard Preview
 
+| Main Dashboard | Breakdown |
+|---|---|
+| ![Main Dashboard](Power%20BI/Main%20Dashboard.png) | ![Breakdown](Power%20BI/Breakdown.png) |
 ---
 
 ## 🚀 Getting Started
